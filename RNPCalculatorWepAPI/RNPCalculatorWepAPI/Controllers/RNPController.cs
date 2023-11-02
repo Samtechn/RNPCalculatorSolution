@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RNPCalculatorWepAPI.Calculator;
+using RNPCalculatorWepAPI.Models;
 
 namespace RNPCalculatorWepAPI.Controllers
 {
@@ -50,34 +51,64 @@ namespace RNPCalculatorWepAPI.Controllers
         }
 
         [HttpPost("stack")]
-        public void CreateNewStack()
+        public IActionResult CreateNewStack()
         {
-
+            _stackDic.Add(_stackDic.Keys.Max() + 1, new Stack<double>());
+            return Ok();
         }
 
         [HttpGet("stack")]
         public IEnumerable<Stack<double>> GetAllStacks()
         {
-            throw new NotImplementedException();
+            return _stackDic.Values;
         }
 
         [HttpDelete("stack/{stack_id}")]
         public void DeleteStack(int stack_id)
         {
-            throw new NotImplementedException();
+            if(_stackDic.TryGetValue(stack_id, out var stack))
+            {
+                _stackDic.Remove(stack_id);
+            }
+            else
+            { 
+                throw new NotImplementedException(); 
+            }
         }
 
         [HttpPost("stack/{stack_id}")]
-        public void PushValueIntoStack(int stack_id, FromBodyAttribute body)
+        public void PushValueIntoStack(int stack_id, [FromBody] ElementToPush body)
         {
-            throw new NotImplementedException();
+            try
+            {
+                double d = Convert.ToDouble(body.Value);
+
+                if (_stackDic.TryGetValue(stack_id, out var stack))
+                {
+                    stack.Push(d);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [HttpGet("stack/{stack_id}")]
         public Stack<double> GetStack(int stack_id)
         {
-            throw new NotImplementedException();
+            if (_stackDic.TryGetValue(stack_id, out var stack))
+            {
+                return stack;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
-
     }
 }
