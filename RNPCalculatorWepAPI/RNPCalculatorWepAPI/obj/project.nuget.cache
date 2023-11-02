@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "deiMAIMdYTHdog+ifyVFLOOEsb5GBQ235IsQDhNu5mf7e6H0vbLmWnNwm6j3KcE6aF160apqULrt6qdAj4PKAg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\samio\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\samio\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\samio\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\samio\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\samio\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\samio\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
