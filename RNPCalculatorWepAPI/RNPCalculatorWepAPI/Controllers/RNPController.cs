@@ -52,7 +52,6 @@ namespace RNPCalculatorWepAPI.Controllers
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, ex);
                     }
-
                 }
                 else 
                 {

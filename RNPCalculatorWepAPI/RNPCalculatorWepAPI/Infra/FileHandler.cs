@@ -5,7 +5,7 @@ using RNPCalculatorWepAPI.Constantes;
 
 namespace RNPCalculatorWepAPI.Infra
 {
-    public class FileHandler : IFileHandler
+    public class FileHandler<T> : IFileHandler<T>
     {
         private readonly string _filePath;
         public FileHandler() 
@@ -13,15 +13,15 @@ namespace RNPCalculatorWepAPI.Infra
             _filePath = ConstantesValues.path;
         }
 
-        public IEnumerable<KeyValueStack> ReadAll()
+        public IEnumerable<T> ReadAll()
         {
             using (StreamReader streamReader = new StreamReader(_filePath, System.Text.Encoding.UTF8))
             {
-                return JsonConvert.DeserializeObject<List<KeyValueStack>>(streamReader.ReadToEnd(), new JsonSerializerSettings { });
+                return JsonConvert.DeserializeObject<List<T>>(streamReader.ReadToEnd(), new JsonSerializerSettings { });
             }
         }
 
-        public void Save(IEnumerable<KeyValueStack> listOfElement)
+        public void Save(IEnumerable<T> listOfElement)
         {
             using (StreamWriter streamWriter = new StreamWriter(_filePath, false, System.Text.Encoding.UTF8))
             {

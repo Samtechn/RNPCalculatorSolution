@@ -27,12 +27,12 @@ namespace RNPCalculatorWepAPI.Calculator
 
         private static double ApplyDivision(double d1, double d2)
         {
-            return d2 / d1;
+            return d1 / d2;
         }
 
         private static double ApplySoustraction(double d1, double d2)
         {
-            return d2 - d1;
+            return d1 - d2;
         }
 
     }

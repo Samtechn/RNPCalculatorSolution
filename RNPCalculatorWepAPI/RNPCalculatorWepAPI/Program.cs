@@ -1,5 +1,6 @@
 using RNPCalculatorWepAPI.Calculator;
 using RNPCalculatorWepAPI.Infra;
+using RNPCalculatorWepAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IRepository, Repository>();
-builder.Services.AddScoped<IFileHandler, FileHandler>();
+builder.Services.AddScoped<IFileHandler<KeyValueStack>, FileHandler<KeyValueStack>>();
 builder.Services.AddScoped<ICalculator, CalculatorClass>();
 
 var app = builder.Build();

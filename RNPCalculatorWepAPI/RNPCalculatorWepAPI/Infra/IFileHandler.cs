@@ -3,9 +3,9 @@ using System.Xml.Linq;
 
 namespace RNPCalculatorWepAPI.Infra
 {
-    public interface IFileHandler
+    public interface IFileHandler<T>
     {
-        IEnumerable<KeyValueStack> ReadAll();
-        void Save(IEnumerable<KeyValueStack> listOfElement);
+        IEnumerable<T> ReadAll();
+        void Save(IEnumerable<T> listOfElement);
     }
 }
