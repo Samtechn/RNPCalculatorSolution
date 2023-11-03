@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RNPCalculatorWepAPI.Calculator;
 using RNPCalculatorWepAPI.Models;
 using RNPCalculatorWepAPI.Infra;
+using RNPCalculatorWepAPI.Constantes;
 
 namespace RNPCalculatorWepAPI.Controllers
 {
@@ -12,15 +13,16 @@ namespace RNPCalculatorWepAPI.Controllers
     {
         private Dictionary<string, Stack<double>> _stackDic;
         private readonly ILogger<RNPController> _logger;
-        private ICalculator _calculator = new CalculatorClass();
-        private Repository _repository = new Repository(new FileHandler());
+        private ICalculator _calculator;
+        private IRepository _repository ;
 
-        public RNPController(ILogger<RNPController> logger)
+        public RNPController(ILogger<RNPController> logger, IRepository repository, ICalculator calculator)
         {
             _logger = logger;
+            _repository = repository;
+            _calculator = calculator;
             _stackDic = _repository.GetAll();
         }
-
 
         [HttpGet("op")]
         public IEnumerable<char> GetOperands() 
@@ -28,22 +30,29 @@ namespace RNPCalculatorWepAPI.Controllers
             return Operands.OperandsList;
         }
 
-
         [HttpPost("op/{op}/stack/{stack_id}")]
         public IActionResult ApplyOperandOnStack(char op, string stack_id) 
         {
-            if (_stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
+            if (Operands.IsValidOperator(op) && _stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
             {
                 if (stack.Count >= 2)
                 {
-                    double d1 = stack.Pop();
-                    double d2 = stack.Pop();
+                    try 
+                    {
+                        double d1 = stack.Pop();
+                        double d2 = stack.Pop();
 
-                    stack.Push(_calculator.Calculate(op, d1, d2));
+                        stack.Push(_calculator.Calculate(op, d1, d2));
 
-                    _repository.Save(_stackDic);
+                        _repository.Save(_stackDic);
 
-                    return new ObjectResult(stack.ToList());
+                        return new ObjectResult(stack.ToList());
+                    }
+                    catch (Exception ex) 
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, ex);
+                    }
+
                 }
                 else 
                 {
@@ -69,7 +78,7 @@ namespace RNPCalculatorWepAPI.Controllers
                 key = _stackDic.Keys.Select(e => Convert.ToInt32(e)).Max() + 1;
             }
 
-            _stackDic.Add(key.ToString(), new Stack<double>());
+            _stackDic.Add(key.ToString(), new Stack<double>(new List<double> { 0}));
             _repository.Save(_stackDic);
             return StatusCode(StatusCodes.Status201Created);
         }

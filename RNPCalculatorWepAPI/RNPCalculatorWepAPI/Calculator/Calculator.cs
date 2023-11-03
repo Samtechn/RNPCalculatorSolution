@@ -2,7 +2,7 @@
 
 namespace RNPCalculatorWepAPI.Calculator
 {
-    internal class CalculatorClass : ICalculator
+    public class CalculatorClass : ICalculator
     {
         public double Calculate(char op, double d1, double d2) 
         {
