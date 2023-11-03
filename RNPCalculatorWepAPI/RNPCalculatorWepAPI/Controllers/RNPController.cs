@@ -15,6 +15,7 @@ namespace RNPCalculatorWepAPI.Controllers
         private readonly ILogger<RNPController> _logger;
         private ICalculator _calculator;
         private IRepository _repository ;
+        private static readonly object _locker = new object();
 
         public RNPController(ILogger<RNPController> logger, IRepository repository, ICalculator calculator)
         {
@@ -39,12 +40,15 @@ namespace RNPCalculatorWepAPI.Controllers
                 {
                     try 
                     {
-                        double d1 = stack.Pop();
-                        double d2 = stack.Pop();
+                        lock(_locker) 
+                        {
+                            double d1 = stack.Pop();
+                            double d2 = stack.Pop();
 
-                        stack.Push(_calculator.Calculate(op, d1, d2));
+                            stack.Push(_calculator.Calculate(op, d1, d2));
 
-                        _repository.Save(_stackDic);
+                            _repository.Save(_stackDic);
+                        }
 
                         return new ObjectResult(stack.ToList());
                     }
@@ -67,18 +71,22 @@ namespace RNPCalculatorWepAPI.Controllers
         [HttpPost("stack")]
         public IActionResult CreateNewStack()
         {
-            int key;
-            if (_stackDic.Count == 0)
+            lock( _locker) 
             {
-                key = 1;
-            }
-            else 
-            { 
-                key = _stackDic.Keys.Select(e => Convert.ToInt32(e)).Max() + 1;
+                int key;
+                if (_stackDic.Count == 0)
+                {
+                    key = 1;
+                }
+                else
+                {
+                    key = _stackDic.Keys.Select(e => Convert.ToInt32(e)).Max() + 1;
+                }
+
+                _stackDic.Add(key.ToString(), new Stack<double>(new List<double> { 0 }));
+                _repository.Save(_stackDic);
             }
 
-            _stackDic.Add(key.ToString(), new Stack<double>(new List<double> { 0}));
-            _repository.Save(_stackDic);
             return StatusCode(StatusCodes.Status201Created);
         }
 
@@ -93,9 +101,12 @@ namespace RNPCalculatorWepAPI.Controllers
         {
             if(_stackDic.TryGetValue(stack_id, out var stack))
             {
-                _stackDic.Remove(stack_id);
-                _repository.Save(_stackDic);
-                return StatusCode(StatusCodes.Status201Created);
+                lock (_locker) 
+                {
+                    _stackDic.Remove(stack_id);
+                    _repository.Save(_stackDic);
+                    return StatusCode(StatusCodes.Status201Created);
+                }
             }
             else
             {
@@ -112,8 +123,12 @@ namespace RNPCalculatorWepAPI.Controllers
 
                 if (_stackDic.TryGetValue(stack_id, out var stack))
                 {
-                    stack.Push(d);
-                    _repository.Save(_stackDic);
+                    lock (_locker) 
+                    {
+                        stack.Push(d);
+                        _repository.Save(_stackDic);
+                    }
+
                     return new ObjectResult(stack.ToList());
                 }
                 else
