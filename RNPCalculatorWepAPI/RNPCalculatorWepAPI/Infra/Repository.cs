@@ -19,7 +19,7 @@ namespace RNPCalculatorWepAPI.Infra
 
         public void Save(Dictionary<string, Stack<double>> stackDic) 
         {
-            _fileHandler.Save(stackDic.Select(e => new KeyValueStack { Key = e.Key, Value = String.Join(',', e.Value)}));
+            _fileHandler.Save(stackDic.Select(e => new KeyValueStack { Key = e.Key, Value = String.Join(',', e.Value.Reverse())}));
         }
     }
 }

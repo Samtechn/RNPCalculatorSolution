@@ -27,13 +27,13 @@ namespace RNPCalculatorWepAPI.Controllers
         [HttpGet("op")]
         public IEnumerable<char> GetOperands() 
         {
-            return Operands.OperandsList;
+            return OperandValues.OperandsList;
         }
 
         [HttpPost("op/{op}/stack/{stack_id}")]
         public IActionResult ApplyOperandOnStack(char op, string stack_id) 
         {
-            if (Operands.IsValidOperator(op) && _stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
+            if (OperandValues.IsValidOperator(op) && _stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
             {
                 if (stack.Count >= 2)
                 {

@@ -10,7 +10,7 @@ namespace RNPCalculatorWepAPI.Infra
         private readonly string _filePath;
         public FileHandler() 
         {
-            _filePath = ConstantesValues.path;
+            _filePath = FilePathValues.jsonPath;
         }
 
         public IEnumerable<T> ReadAll()
