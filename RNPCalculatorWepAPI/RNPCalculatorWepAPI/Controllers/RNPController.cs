@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RNPCalculatorWepAPI.Calculator;
 using RNPCalculatorWepAPI.Models;
-using Newtonsoft.Json;
+using RNPCalculatorWepAPI.Infra;
 
 namespace RNPCalculatorWepAPI.Controllers
 {
@@ -10,68 +10,17 @@ namespace RNPCalculatorWepAPI.Controllers
     [Route("rnp")]
     public class RNPController : ControllerBase
     {
-        private Dictionary<int, Stack<double>> _stackDic;
+        private Dictionary<string, Stack<double>> _stackDic;
         private readonly ILogger<RNPController> _logger;
-        private ICalculator _calculator;
+        private ICalculator _calculator = new CalculatorClass();
+        private Repository _repository = new Repository(new FileHandler());
 
         public RNPController(ILogger<RNPController> logger)
         {
             _logger = logger;
-            _stackDic = BuildStackDictionary(Stacks);
+            _stackDic = _repository.GetAll();
         }
 
-        public static List<KeyValueStack> Stacks
-        {
-            get
-            {
-                using (StreamReader streamReader = new StreamReader(@".\BackUpFile\Stacks.json", System.Text.Encoding.UTF8))
-                {
-                    return JsonConvert.DeserializeObject<List<KeyValueStack>>(streamReader.ReadToEnd(), new JsonSerializerSettings { });
-                }
-            }
-
-            set
-            {
-                using (StreamWriter streamWriter = new StreamWriter(@".\BackUpFile\Stacks.json", false, System.Text.Encoding.UTF8))
-                {
-                    streamWriter.Write(JsonConvert.SerializeObject(value));
-                }
-            }
-        }
-
-        private Dictionary<int, Stack<double>> BuildStackDictionary(List<KeyValueStack> list)
-        {
-            var result = new Dictionary<int, Stack<double>>();
-
-            foreach(var e in list)
-            {
-                //result.Add(e.Key, new Stack<double>(e.Value.Split(',').ToList()));
-            }
-
-            return result;
-        }
-
-        private List<KeyValueStack> TransformDictionary(Dictionary<int, Stack<double>> dic)
-        {
-            var result = new List<KeyValueStack>();
-
-            foreach (var e in dic)
-            {
-                //result.Add(new KeyValueStack { Key = e.Key, Value = e.Value.ToList()});
-            }
-
-            return result;
-        }
-
-        private void WriteToJson(Dictionary<int, Stack<double>> dic)
-        {
-            Stacks = TransformDictionary(dic);
-        }
-
-        private Dictionary<int, Stack<double>> ReadFromJson()
-        {
-            return BuildStackDictionary(Stacks);
-        }
 
         [HttpGet("op")]
         public IEnumerable<char> GetOperands() 
@@ -81,7 +30,7 @@ namespace RNPCalculatorWepAPI.Controllers
 
 
         [HttpPost("op/{op}/stack/{stack_id}")]
-        public IActionResult ApplyOperandOnStack(char op, int stack_id) 
+        public IActionResult ApplyOperandOnStack(char op, string stack_id) 
         {
             if (_stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
             {
@@ -92,7 +41,7 @@ namespace RNPCalculatorWepAPI.Controllers
 
                     stack.Push(_calculator.Calculate(op, d1, d2));
 
-                    WriteToJson(_stackDic);
+                    _repository.Save(_stackDic);
 
                     return new ObjectResult(stack.ToList());
                 }
@@ -117,11 +66,11 @@ namespace RNPCalculatorWepAPI.Controllers
             }
             else 
             { 
-                key = _stackDic.Keys.Max() + 1;
+                key = _stackDic.Keys.Select(e => Convert.ToInt32(e)).Max() + 1;
             }
 
-            _stackDic.Add(key, new Stack<double>());
-            WriteToJson(_stackDic);
+            _stackDic.Add(key.ToString(), new Stack<double>());
+            _repository.Save(_stackDic);
             return StatusCode(StatusCodes.Status201Created);
         }
 
@@ -132,11 +81,12 @@ namespace RNPCalculatorWepAPI.Controllers
         }
 
         [HttpDelete("stack/{stack_id}")]
-        public IActionResult DeleteStack(int stack_id)
+        public IActionResult DeleteStack(string stack_id)
         {
             if(_stackDic.TryGetValue(stack_id, out var stack))
             {
                 _stackDic.Remove(stack_id);
+                _repository.Save(_stackDic);
                 return StatusCode(StatusCodes.Status201Created);
             }
             else
@@ -146,7 +96,7 @@ namespace RNPCalculatorWepAPI.Controllers
         }
 
         [HttpPost("stack/{stack_id}")]
-        public IActionResult PushValueIntoStack(int stack_id, [FromBody] ElementToPush body)
+        public IActionResult PushValueIntoStack(string stack_id, [FromBody] ElementToPush body)
         {
             try
             {
@@ -155,7 +105,7 @@ namespace RNPCalculatorWepAPI.Controllers
                 if (_stackDic.TryGetValue(stack_id, out var stack))
                 {
                     stack.Push(d);
-                    WriteToJson(_stackDic);
+                    _repository.Save(_stackDic);
                     return new ObjectResult(stack.ToList());
                 }
                 else
@@ -170,7 +120,7 @@ namespace RNPCalculatorWepAPI.Controllers
         }
 
         [HttpGet("stack/{stack_id}")]
-        public IActionResult GetStack(int stack_id)
+        public IActionResult GetStack(string stack_id)
         {
             if (_stackDic.TryGetValue(stack_id, out var stack))
             {

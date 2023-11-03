@@ -11,4 +11,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties backupfile_4stacks_1json__JsonSchema="https://bitbucket.org/atlassianlabs/intellij-bitbucket-references-plugin/raw/master/src/main/resources/schemas/bitbucket-pipelines.schema.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
