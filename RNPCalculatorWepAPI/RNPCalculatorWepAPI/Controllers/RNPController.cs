@@ -3,6 +3,7 @@ using RNPCalculatorWepAPI.Calculator;
 using RNPCalculatorWepAPI.Models;
 using RNPCalculatorWepAPI.Infra;
 using RNPCalculatorWepAPI.Constantes;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace RNPCalculatorWepAPI.Controllers
 {
@@ -38,24 +39,17 @@ namespace RNPCalculatorWepAPI.Controllers
             {
                 if (stack.Count >= 2)
                 {
-                    try 
+                    lock(_locker) 
                     {
-                        lock(_locker) 
-                        {
-                            double d1 = stack.Pop();
-                            double d2 = stack.Pop();
+                        double d1 = stack.Pop();
+                        double d2 = stack.Pop();
 
-                            stack.Push(_calculator.Calculate(op, d1, d2));
+                        stack.Push(_calculator.Calculate(op, d1, d2));
 
-                            _repository.Save(_stackDic);
-                        }
-
-                        return new ObjectResult(stack.ToList());
+                        _repository.Save(_stackDic);
                     }
-                    catch (Exception ex) 
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, ex);
-                    }
+
+                    return new ObjectResult(new { Id = stack_id, Stack = stack.ToList() });
                 }
                 else 
                 {
@@ -71,9 +65,10 @@ namespace RNPCalculatorWepAPI.Controllers
         [HttpPost("stack")]
         public IActionResult CreateNewStack()
         {
-            lock( _locker) 
+            int key;
+            Stack<double> stack;
+            lock ( _locker) 
             {
-                int key;
                 if (_stackDic.Count == 0)
                 {
                     key = 1;
@@ -83,17 +78,18 @@ namespace RNPCalculatorWepAPI.Controllers
                     key = _stackDic.Keys.Select(e => Convert.ToInt32(e)).Max() + 1;
                 }
 
-                _stackDic.Add(key.ToString(), new Stack<double>(new List<double> { 0 }));
+                stack = new Stack<double>(new List<double> { 0 });
+                _stackDic.Add(key.ToString(), stack);
                 _repository.Save(_stackDic);
-            }
 
-            return StatusCode(StatusCodes.Status201Created);
+                return new ObjectResult(new { Id = key, Stack = stack });
+            }
         }
 
         [HttpGet("stack")]
         public IActionResult GetAllStacks()
         {
-            return new ObjectResult(_stackDic.Values.ToList());
+            return new ObjectResult(_stackDic.Select(kv => new {Id = kv.Key, Stack = kv.Value.ToList()}));
         }
 
         [HttpDelete("stack/{stack_id}")]
@@ -119,17 +115,17 @@ namespace RNPCalculatorWepAPI.Controllers
         {
             try
             {
-                double d = Convert.ToDouble(body.Value);
-
                 if (_stackDic.TryGetValue(stack_id, out var stack))
                 {
+                    double d = Convert.ToDouble(body.Value);
+
                     lock (_locker) 
                     {
                         stack.Push(d);
                         _repository.Save(_stackDic);
                     }
 
-                    return new ObjectResult(stack.ToList());
+                    return new ObjectResult(new { Id = stack_id, Stack = stack.ToList() });
                 }
                 else
                 {
@@ -138,7 +134,7 @@ namespace RNPCalculatorWepAPI.Controllers
             }
             catch (Exception ex) 
             {
-                return StatusCode(StatusCodes.Status400BadRequest, ex);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
@@ -147,7 +143,7 @@ namespace RNPCalculatorWepAPI.Controllers
         {
             if (_stackDic.TryGetValue(stack_id, out var stack))
             {
-                return new ObjectResult(stack.ToList());
+                return new ObjectResult(new { Id = stack_id, Stack = stack.ToList() });
             }
             else
             {

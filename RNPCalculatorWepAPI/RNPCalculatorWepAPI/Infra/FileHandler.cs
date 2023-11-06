@@ -13,7 +13,7 @@ namespace RNPCalculatorWepAPI.Infra
             _filePath = FilePathValues.jsonPath;
         }
 
-        public IEnumerable<T> ReadAll()
+        public IEnumerable<T>? ReadAll()
         {
             using (StreamReader streamReader = new StreamReader(_filePath, System.Text.Encoding.UTF8))
             {
