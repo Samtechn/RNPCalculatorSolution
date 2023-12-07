@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj": {}
+    "c:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj": {
+    "c:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj",
+        "projectUniqueName": "c:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj",
         "projectName": "RNPCalculatorWepAPI",
-        "projectPath": "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj",
+        "projectPath": "c:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI.csproj",
         "packagesPath": "C:\\Users\\samio\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\obj\\",
+        "outputPath": "c:\\Users\\samio\\source\\repos\\RNPCalculatorSolution\\RNPCalculatorWepAPI\\RNPCalculatorWepAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\samio\\AppData\\Roaming\\NuGet\\NuGet.Config",
