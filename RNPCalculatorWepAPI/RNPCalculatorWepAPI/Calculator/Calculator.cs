@@ -12,6 +12,7 @@ namespace RNPCalculatorWepAPI.Calculator
                 '-' => ApplySoustraction(d1, d2),
                 '*' => ApplyMultiplication(d1, d2),
                 '/' => ApplyDivision(d1, d2),
+                _ => throw new NotImplementedException()
             };
         }
 

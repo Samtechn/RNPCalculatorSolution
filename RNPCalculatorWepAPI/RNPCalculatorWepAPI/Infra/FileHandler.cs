@@ -13,11 +13,13 @@ namespace RNPCalculatorWepAPI.Infra
             _filePath = FilePathValues.jsonPath;
         }
 
-        public IEnumerable<T>? ReadAll()
+        public IEnumerable<T> ReadAll()
         {
+            IEnumerable<T> result;
             using (StreamReader streamReader = new StreamReader(_filePath, System.Text.Encoding.UTF8))
             {
-                return JsonConvert.DeserializeObject<List<T>>(streamReader.ReadToEnd(), new JsonSerializerSettings { });
+                result = JsonConvert.DeserializeObject<List<T>>(streamReader.ReadToEnd(), new JsonSerializerSettings { }) ?? new List<T>();
+                return result;
             }
         }
 

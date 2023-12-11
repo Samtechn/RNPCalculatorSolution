@@ -35,9 +35,9 @@ namespace RNPCalculatorWepAPI.Controllers
         [HttpPost("op/{op}/stack/{stack_id}")]
         public IActionResult ApplyOperandOnStack(char op, string stack_id) 
         {
-            if (OperandValues.IsValidOperator(op) && _stackDic.TryGetValue(stack_id, out Stack<double> stack)) 
+            if (OperandValues.IsValidOperator(op) && _stackDic.TryGetValue(stack_id, out Stack<double>? stack)) 
             {
-                if (stack.Count >= 2)
+                if (stack != null && stack.Count >= 2)
                 {
                     lock(_locker) 
                     {
