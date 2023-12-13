@@ -2,7 +2,7 @@
 {
     public static class FilePathValues
     {
-        public static readonly string jsonPath = @".\BackUpFile\Stacks.json";
+        public static readonly string jsonPath = @"BackUpFile/Stacks.json";
     }
 
     public static class OperandValues
