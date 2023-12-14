@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Service
+metadata: 
+  name: rnpcalculator-nd-srv
+spec: 
+  type: NodePort
+  selector:
+    app: rnpcalculator-nd-srv
+  ports:
+    - name: rnpcalculator-nd-srv
+      protocol: TCP
+      port: 80
+      targetPort: 80

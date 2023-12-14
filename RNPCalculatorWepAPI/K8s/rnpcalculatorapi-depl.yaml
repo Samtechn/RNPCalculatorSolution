@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: rnpcalculatorapi-depl
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+        app: rnpcalculatorapiservice
+  template:
+    metadata:
+      labels: 
+        app: rnpcalculatorapiservice
+    spec:
+      containers:
+        - name: rnpcalculatorapiservice
+          image: samtechn/rnpcalculatorapi:latest
+          ports: 
+          - containerPort: 80
