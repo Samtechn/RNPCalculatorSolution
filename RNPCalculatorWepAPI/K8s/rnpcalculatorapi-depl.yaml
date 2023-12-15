@@ -15,5 +15,3 @@ spec:
       containers:
         - name: rnpcalculatorapiservice
           image: samtechn/rnpcalculatorapi:latest
-          ports: 
-          - containerPort: 80
